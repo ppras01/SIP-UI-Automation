@@ -34,6 +34,7 @@ public class HomePage {
 	private By CityColumn = By.xpath("//div[contains(text(),'City')]");
 	private By ZipColumn = By.xpath("//div[contains(text(),'Zip')]");
 	private By Headers = By.xpath("//div[@class='MuiBox-root css-ksg1uk']");
+	int k=10;
 
 	// public constructor
 	public HomePage(WebDriver driver) {

@@ -1,6 +1,5 @@
 package com.qa.sip.base;
 
-import java.io.FileNotFoundException;
 import java.util.Properties;
 
 import org.openqa.selenium.WebDriver;
@@ -21,16 +20,19 @@ public class baseTestClass {
 	
 	@BeforeTest
 	public void setup() throws InterruptedException {
-		df = new DriverFactory();
-		try {
-			prop=df.initProp();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		driver = df.initDriver(prop);
-		loginpage = new LoginPage(driver);
+	    try {
+	        df = new DriverFactory();  // Initializes prop in constructor
+	        prop = df.getProp();  // Get initialized properties
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        throw new RuntimeException("Failed to initialize DriverFactory: " + e.getMessage());
+	    }
+
+	    driver = df.initDriver();  // No need to pass prop explicitly
+	    loginpage = new LoginPage(driver);
 	}
+
+
 
 	@AfterTest
 	public void tearDown() {

@@ -11,66 +11,117 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
-import com.qa.sip.errors.AppError;
 import com.qa.sip.exceptions.BrowserExceptions;
+import com.qa.sip.exceptions.FrameworkException;
 
 public class DriverFactory {
 
-	WebDriver driver;
-	Properties prop;
+	private WebDriver driver;
+	private Properties prop;
+	public static String isEleHighLight;
+	public static ThreadLocal<WebDriver> tldriver = new ThreadLocal<WebDriver>();
 
-	public WebDriver initDriver(Properties prop) throws InterruptedException {
+	// Constructor ensures prop is initialized
+	public DriverFactory() {
+		try {
+			this.prop = initProp();
+		} catch (FileNotFoundException e) {
+			throw new RuntimeException("Properties file not found!", e);
+		}
+	}
+
+	public WebDriver initDriver() throws InterruptedException {
+		if (prop == null) { // Ensure prop is initialized
+			throw new IllegalStateException("Properties file is not initialized!");
+		}
 
 		String browserName = prop.getProperty("browser");
+		if (browserName == null) {
+			throw new IllegalStateException("Browser name is missing in properties file!");
+		}
 
 		System.out.println("The browser name is: " + browserName);
+		isEleHighLight = prop.getProperty("highlight");
+
+		browserOptions browserOptions = new browserOptions(prop);
 
 		switch (browserName.toLowerCase().trim()) {
 		case "chrome":
-			driver = new ChromeDriver();
+			tldriver.set(new ChromeDriver(browserOptions.chromeOptions()));
 			break;
 		case "firefox":
-			driver = new FirefoxDriver();
+			tldriver.set(new FirefoxDriver(browserOptions.firefoxOptions()));
 			break;
 		case "edge":
-			driver = new EdgeDriver();
+			tldriver.set(new EdgeDriver(browserOptions.edgeOptions()));
 			break;
 		default:
-			System.out.println(AppError.INVALID_BROWSER_MESSAGE);
-			throw new BrowserExceptions("INVALID BROWSER" + browserName);
-
+			throw new BrowserExceptions("INVALID BROWSER: " + browserName);
 		}
 
-		driver.manage().window().maximize();
-		driver.manage().window().setSize(new Dimension(1024, 768));
-		driver.manage().deleteAllCookies();
-		driver.get(prop.getProperty("url"));
-		Thread.sleep(5000);
-		return driver;
+		getDriver().manage().window().maximize();
+		getDriver().manage().window().setSize(new Dimension(1024, 768));
+		getDriver().manage().deleteAllCookies();
+		getDriver().get(prop.getProperty("url"));
+		return getDriver(); // getting threadlocal driver and returning it to acheive thread safety
 	}
 
-	/**
-	 * This method is use to initialise the properties from config file
-	 * 
-	 * @return
-	 * @throws FileNotFoundException
-	 */
-	public Properties initProp() throws FileNotFoundException {
+	public static WebDriver getDriver() {
 
-		InputStream inputStream = getClass().getClassLoader().getResourceAsStream("config/config.properties");
+		return tldriver.get();
+
+	}
+
+	private Properties initProp() throws FileNotFoundException {
+		Properties prop = new Properties();
+		String envName = System.getProperty("env");
+		System.out.println("Running the tests on: " + (envName != null ? envName : "default") + " environment");
+
+		InputStream inputStream = null;
+
+		if (envName == null) {
+			inputStream = getClass().getClassLoader().getResourceAsStream("config/qa_config.properties");
+		} else {
+			switch (envName.toLowerCase().trim()) {
+			case "qa":
+				inputStream = getClass().getClassLoader().getResourceAsStream("config/qa_config.properties");
+				break;
+			case "prod":
+				inputStream = getClass().getClassLoader().getResourceAsStream("config/prod_config.properties");
+				break;
+			case "preprod":
+				inputStream = getClass().getClassLoader().getResourceAsStream("config/preprod_config.properties");
+				break;
+			default:
+				throw new FrameworkException("PLEASE PASS A CORRECT ENVIRONMENT NAME");
+			}
+		}
 
 		if (inputStream == null) {
 			throw new FileNotFoundException("config.properties file not found!");
 		}
 
-		Properties prop = new Properties();
 		try {
 			prop.load(inputStream);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException("Failed to load properties file", e);
+		} finally {
+			try {
+				if (inputStream != null) {
+					inputStream.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 
+		return prop;
+	}
+
+	public Properties getProp() {
+		if (prop == null) {
+			throw new IllegalStateException("Properties file is not initialized!");
+		}
 		return prop;
 	}
 }

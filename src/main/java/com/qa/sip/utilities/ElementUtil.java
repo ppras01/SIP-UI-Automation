@@ -21,15 +21,18 @@ import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.qa.sip.exceptions.FrameworkException;
+import com.qa.sip.factory.DriverFactory;
 
 public class ElementUtil {
 
 	private WebDriver driver;
 	private Actions act;
+	private JavaScriptUtil js;
 
 	public ElementUtil(WebDriver driver) {
 		this.driver = driver;
 		act = new Actions(driver);
+		js = new JavaScriptUtil(driver);
 	}
 
 	public void doClick(By locator) {
@@ -51,10 +54,20 @@ public class ElementUtil {
 	public void doSendKeys(By locator, CharSequence... value) {
 		getElement(locator).sendKeys(value);
 	}
+	
+	private void checkElementHighlight(WebElement element) {
+		if (Boolean.parseBoolean(DriverFactory.isEleHighLight)) { // isele is giving string,we need to convert is to boolean
+			js.flash(element);
+		}
+	}
 
 	public WebElement getElement(By locator) {
-		return driver.findElement(locator);
+		WebElement element = driver.findElement(locator);
+		checkElementHighlight(element);
+		return element;
 	}
+	
+	
 
 	public boolean isElementDisplayed(By locator) {
 		try {
@@ -316,34 +329,35 @@ public class ElementUtil {
 	 */
 	public WebElement waitForElementVisible(By locator, int timeOut) {
 		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeOut));
-		return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+		WebElement element= wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+		checkElementHighlight(element);
+		return element;
 	}
 
 	public WebElement waitForElementVisible(By locator, int timeOut, int intervalTime) {
 		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeOut), Duration.ofSeconds(intervalTime));
-		return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+		WebElement element= wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+		checkElementHighlight(element);
+		return element;
 	}
-	
+
 	/**
 	 * wait for element visible on the page with fluent wait features
+	 * 
 	 * @param locator
 	 * @param timeOut
 	 * @param pollingTime
 	 * @return
 	 */
-	public WebElement waitForElementVisibleWithFluentFeeatures(By locator, int timeOut, int pollingTime) {		
-		Wait<WebDriver> wait =	new FluentWait<WebDriver>(driver)
-									.withTimeout(Duration.ofSeconds(timeOut))
-									.pollingEvery(Duration.ofSeconds(pollingTime))
-									.ignoring(NoSuchElementException.class)
-									.ignoring(StaleElementReferenceException.class)
-									.ignoring(ElementNotInteractableException.class)
-									.withMessage("=====element is not found======" + locator);
-		return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));									
+	public WebElement waitForElementVisibleWithFluentFeeatures(By locator, int timeOut, int pollingTime) {
+		Wait<WebDriver> wait = new FluentWait<WebDriver>(driver).withTimeout(Duration.ofSeconds(timeOut))
+				.pollingEvery(Duration.ofSeconds(pollingTime)).ignoring(NoSuchElementException.class)
+				.ignoring(StaleElementReferenceException.class).ignoring(ElementNotInteractableException.class)
+				.withMessage("=====element is not found======" + locator);
+		WebElement element= wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+		checkElementHighlight(element);
+		return element;
 	}
-	
-	
-	
 
 	/**
 	 * An expectation for checking an element is visible and enabled such that you
@@ -367,14 +381,6 @@ public class ElementUtil {
 		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeOut));
 		return wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(locator));
 	}
-	
-	
-	
-	
-	
-	
-	
-	
 
 	/**
 	 * An expectation for checking that there is at least one element present on a
@@ -472,19 +478,14 @@ public class ElementUtil {
 		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeOut));
 		return wait.until(ExpectedConditions.alertIsPresent());
 	}
-	
-	
+
 	public Alert waitForAlertUsingFluentWaitAndSwitch(int timeOut) {
-		
-		Wait<WebDriver> wait =	new FluentWait<WebDriver>(driver)
-								.withTimeout(Duration.ofSeconds(timeOut))
-								.ignoring(NoAlertPresentException.class)
-								.withMessage("====Js alert is not present===");
+
+		Wait<WebDriver> wait = new FluentWait<WebDriver>(driver).withTimeout(Duration.ofSeconds(timeOut))
+				.ignoring(NoAlertPresentException.class).withMessage("====Js alert is not present===");
 		return wait.until(ExpectedConditions.alertIsPresent());
 
 	}
-	
-	
 
 	public String getAlertText(int timeOut) {
 		return waitForAlertAndSwitch(timeOut).getText();
@@ -536,4 +537,5 @@ public class ElementUtil {
 		}
 
 		return false;
-	}}
+	}
+}

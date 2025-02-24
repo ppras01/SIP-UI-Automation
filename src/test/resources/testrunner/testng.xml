@@ -3,7 +3,13 @@
 
 <suite name="SIP Sanity Test Suite" verbose="3" thread-count="2" parallel="tests" >
 
-
+<listeners>
+		
+		<listener
+			class-name="com.qa.opencart.listeners.TestAllureListener" />
+		<!-- <listener class-name="com.qa.opencart.listeners.AnnotationTransformer" 
+			/> -->
+	</listeners>
 	<test name="Login Page Test">
 	
 		<classes>

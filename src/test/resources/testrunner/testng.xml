@@ -6,7 +6,7 @@
 <listeners>
 		
 		<listener
-			class-name="com.qa.opencart.listeners.TestAllureListener" />
+			class-name="com.qa.sip.listeners.TestAllureListener" />
 		<!-- <listener class-name="com.qa.opencart.listeners.AnnotationTransformer" 
 			/> -->
 	</listeners>

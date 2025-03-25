@@ -29,6 +29,10 @@ public class browserOptions {
 			co.addArguments("--incognito");
 			System.out.println("Running chrome in incognito mode-----");
 		}
+		if(Boolean.parseBoolean(prop.getProperty("certerrorignore"))){
+			co.addArguments("--ignore-certificate-errors");
+			System.out.println("Ignoring cert error-----");
+		}
 		return co;
 		
 	}

@@ -103,4 +103,9 @@ public class HomePageTest extends baseTestClass {
     public void homeSearchBtnTest() {
         Assert.assertTrue(homePage.isSearchBtnDisplayed(), "Search Button is not present");
     }
+    @Test
+    public void homePageSearchTextTest() {
+    	String homePageSearchText=homePage.getHomePageSearchTextTest();
+        Assert.assertEquals(homePageSearchText,appConstants.HOME_PAGE_SEARCH_TEXT);
+    }
 }

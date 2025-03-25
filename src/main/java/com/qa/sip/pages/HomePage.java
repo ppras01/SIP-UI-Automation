@@ -61,7 +61,10 @@ public class HomePage {
 		return ele.waitForElementPresence(SIPLogo, appConstants.DEFAULT_SHORT_TIMEOUT).isDisplayed();
 
 	}
+	public boolean isResetBtnDisplyed() {
+		return ele.waitForElementPresence(ResetBtn, appConstants.DEFAULT_SHORT_TIMEOUT).isDisplayed();
 
+	}
 	public boolean isDistributnPartnrColumnDisplyed() {
 		return ele.waitForElementPresence(DistributnPrtColumn, appConstants.DEFAULT_SHORT_TIMEOUT).isDisplayed();
 
@@ -107,6 +110,10 @@ public class HomePage {
 
 	}
 
+	public boolean isFindAStoreLinkDisplayed() {
+		return ele.waitForElementPresence(FindStoreLink, appConstants.DEFAULT_SHORT_TIMEOUT).isDisplayed();
+
+	}
 	public List<String> getColumnNameTest() {
 		List<WebElement> header = ele.waitForElementsVisible(Headers, appConstants.DEFAULT_SHORT_TIMEOUT);
 		List<String> headerList = new ArrayList<>();
@@ -132,5 +139,9 @@ public class HomePage {
 		return ele.waitForElementPresence(SearchBtn,appConstants.DEFAULT_SHORT_TIMEOUT).isDisplayed();
 		
 	}
-
+ 
+	public String getHomePageSearchTextTest() {
+		String ActHomePageText = ele.waitForElementPresence(SearchMessageText, appConstants.DEFAULT_SHORT_TIMEOUT).getText();
+		return ActHomePageText;
+	}
 }

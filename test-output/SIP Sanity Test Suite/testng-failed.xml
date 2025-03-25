@@ -2,15 +2,19 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
 <suite thread-count="2" parallel="tests" name="Failed suite [SIP Sanity Test Suite]" guice-stage="DEVELOPMENT" verbose="3">
   <listeners>
-    <listener class-name="com.qa.opencart.listeners.TestAllureListener"/>
+    <listener class-name="com.qa.sip.listeners.TestAllureListener"/>
   </listeners>
   <test thread-count="2" parallel="tests" name="Login Page Test(failed)" verbose="3">
     <classes>
       <class name="com.qa.sip.tests.LoginPageTest">
         <methods>
           <include name="setup"/>
+          <include name="loginTest"/>
+          <include name="isLogoExist"/>
           <include name="tearDown"/>
+          <include name="loginPageTitleTest"/>
           <include name="loginPageURLTest"/>
+          <include name="TermsOfUseLinkDisplayed"/>
         </methods>
       </class> <!-- com.qa.sip.tests.LoginPageTest -->
     </classes>
@@ -19,10 +23,21 @@
     <classes>
       <class name="com.qa.sip.tests.HomePageTest">
         <methods>
-          <include name="homePageURLTest"/>
-          <include name="setup"/>
-          <include name="tearDown"/>
+          <include name="homePageTitleTest"/>
+          <include name="homePageCityColumnTest"/>
+          <include name="homePageDistributnPrtnerColumnTest"/>
+          <include name="homePageDivisionCodeColumnTest"/>
+          <include name="homePageZipColumnTest"/>
           <include name="homePageSetup"/>
+          <include name="homePageURLTest"/>
+          <include name="homeLogOutBtnTest"/>
+          <include name="setup"/>
+          <include name="homeStoreCodeColumnTest"/>
+          <include name="homeSearchBtnTest"/>
+          <include name="tearDown"/>
+          <include name="homePageStoreNameColumnTest"/>
+          <include name="homePageStateColumnTest"/>
+          <include name="homeAddressColumnTest"/>
         </methods>
       </class> <!-- com.qa.sip.tests.HomePageTest -->
     </classes>

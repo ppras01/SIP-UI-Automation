@@ -11,6 +11,8 @@ public class appConstants {
 	public static final String LOGIN_PAGE_PARTIAL_URL="blackhawknetwork";
 	public static final String HOME_PAGE_PARTIAL_URL="store-inventory";
 	public static final String HOME_PAGE_TITLE="Store search";
+	public static final String HOME_PAGE_SEARCH_TEXT="Use the search bar above to find what you're looking for.";
+
 
 
 	

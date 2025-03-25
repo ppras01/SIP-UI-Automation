@@ -15,7 +15,7 @@ public class LoginPage {
 
 	private By loginId = By.xpath("//input[@id='username']");
 	private By pwd = By.xpath("//input[@id='password']");
-	private By termsOfUseLink = By.xpath("//a[@id='link-terms-of-use']");
+	private By termsOfUseLink = By.xpath("//*[@id=\"link-terms-of-use\"]");
 	private By loginBtn = By.xpath("//input[@id='kc-login']");
 	private By registerLink = By.id("//a[normalize-space()='Register']");
 	private By BlackHawkLogo = By.xpath("//img[@id='CustomLogo']");
